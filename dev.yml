@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+  redis:
+    image: redis:latest
+
+  publisher:
+    build: .
+    depends_on:
+      - redis
+    command: python publisher.py
+    links:
+      - redis
+
+  subscriber:
+    build: .
+    depends_on:
+      - redis
+    command: python subscriber.py
+    links:
+      - redis
