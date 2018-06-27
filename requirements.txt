@@ -1,1 +1,3 @@
 redis==2.10.5
+python-logstash==0.4.6
+requests==2.9.1

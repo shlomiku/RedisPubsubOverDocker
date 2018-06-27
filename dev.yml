@@ -5,17 +5,48 @@ services:
     image: redis:latest
 
   publisher:
-    build: .
+    build:
+      context: .
+      dockerfile: ./compose/pubsub/Dockerfile
     depends_on:
       - redis
     command: python publisher.py
     links:
       - redis
+      - elk
+    volumes:
+      - ./:/opt/project
 
   subscriber:
-    build: .
+    build:
+      context: .
+      dockerfile: ./compose/pubsub/Dockerfile
     depends_on:
       - redis
     command: python subscriber.py
     links:
       - redis
+      - elk
+    volumes:
+      - ./:/opt/project
+
+#  elk:
+#    image: willdurand/elk
+#    ports:
+#        - "8080:80"
+#        - "9300:9300"
+#        - "9200:9200"
+#        - "5959:5959"
+#    volumes:
+#        - ./logstash/config:/etc/logstash/conf.d
+
+  elk:
+    build:
+      context: .
+      dockerfile: ./compose/elk/Dockerfile
+    ports:
+      - "5601:5601"
+      - "9200:9200"
+      - "5044:5044"
+    volumes:
+        - ./logstash/config:/etc/logstash/conf.d
